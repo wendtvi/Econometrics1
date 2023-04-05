@@ -99,8 +99,22 @@ sqrt(diag(vcov(linear_regression)))
 ###################################################
 ###############QUESTÃO 4###########################
 ###################################################
-I=matrix(0,ncol=n,nrow = n)
-diag(I)=1
+rm(V_beta_hat,D,age_squared)
+dados=dados[-c(10001:nrow(dados)),]
+n=nrow(dados)
+# Add this variable to the regression.
+dados[,ncol(dados)+1]=as.numeric(dados$age-15)
+names(dados)[ncol(dados)]="experience"
+
+# Calculate (X′X).
+matrix_regressors=matrix(NA,nrow =n,ncol=4)
+matrix_regressors[,1]=dados$female
+matrix_regressors[,2]=dados$education
+matrix_regressors[,3]=dados$experience
+matrix_regressors[,4]=dados$experience^2
+#matrix_regressors[,6]=rep(1,n)
+gc()
+I=diag(n)
 #Now use the Frisch-Waugh-Lovell theorem to estimate the effect of education on wages, while partialling out the controls in (1)
 M=(I-(matrix_regressors[,-2]%*%solve(t(matrix_regressors[,-2])%*%matrix_regressors[,-2])%*%t(matrix_regressors[,-2])))
 X_ed_star=M%*%matrix_regressors[,2]
